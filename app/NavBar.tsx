@@ -12,6 +12,7 @@ const NavBar = () => {
   const links = [
     { name: 'Dashboard', href: '/' },
     { name: 'Issues', href: '/issues' },
+    {name : 'Get Issues', href:'/issues/list'}
   ]
 
   return (
@@ -33,6 +34,7 @@ const NavBar = () => {
               {link.name}
             </Link>
           </li>
+          
         ))}
       </ul>
     </nav>

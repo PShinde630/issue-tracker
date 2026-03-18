@@ -25,3 +25,28 @@ export async function POST(request:NextRequest){
 
 
 }
+
+export async function GET(request: NextRequest){
+    const page = parseInt(request.nextUrl.searchParams.get("page") || "1", 10);
+    const pageSize = 10;
+    const currentPage = Number.isNaN(page) || page < 1 ? 1 : page;
+
+    const [issues, totalCount] = await Promise.all([
+        prisma.iSSUE.findMany({
+            orderBy:{
+                createdAt:"desc"
+            },
+            skip: (currentPage - 1) * pageSize,
+            take: pageSize,
+        }),
+        prisma.iSSUE.count(),
+    ]);
+
+    return NextResponse.json({
+        issues,
+        totalCount,
+        page: currentPage,
+        pageSize,
+    });
+
+}
