@@ -6,6 +6,7 @@ import {useForm,Controller} from "react-hook-form";
 import "easymde/dist/easymde.min.css";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Spinner from '@/app/components/Spinner';
 
 const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {
   ssr: false,
@@ -21,6 +22,7 @@ const NewIssuePage = () => {
   const router = useRouter();
   const {register,control,handleSubmit} = useForm<IssueForm>();
   const [error,setError] = useState('');
+  const [isSubmitting,setSubmitting]= useState(false);
 
   return (
     <div className='max-w-xl'>
@@ -29,10 +31,12 @@ const NewIssuePage = () => {
       </Callout.Root>}
     <form className='space-y-3' onSubmit={handleSubmit(async (data)=>{
         try {
+          setSubmitting(true);
           await axios.post('/api/issues',data);
           router.push('/issues');
           
         } catch (error) {
+          setSubmitting(false);
           setError('An Unexpected Error Occurred.');
         }
       })}>
@@ -50,7 +54,9 @@ const NewIssuePage = () => {
 
         />
 
-        <Button type="submit" className="cursor-pointer">Submit New Issue</Button>
+        <Button type="submit" className="cursor-pointer" disabled={isSubmitting}>
+          Submit New Issue{isSubmitting && <Spinner />}
+        </Button>
 
     </form>
     </div>
